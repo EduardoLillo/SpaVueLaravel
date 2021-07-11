@@ -30,5 +30,18 @@ class CommentController extends Controller
 
       return new CommentResource($comment);
     }
+    public function show(Comment $comment){
 
+      return  new CommentResource($comment);
+    }
+    public function update(Comment $comment, CommentStoreRequest $request)
+    {    
+     $comment->update($request->validated());
+     return new CommentResource($comment);
+    }
+    public function destroy(Comment $comment)
+    {
+     $comment->delete();
+     return response()->noContent();
+    }
 }

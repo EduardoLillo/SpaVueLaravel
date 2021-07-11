@@ -18,7 +18,7 @@
 	<br>
 	<input type="file" @change="select_file">
 	<br><br>
-	<input type="submit" class="btn btn-primary" :disabled="form_submitting" :value="form_submitting ? 'Saving Comment...' : 'Save Comment'" >
+	<input type="submit" class="btn btn-primary" :disabled="form_submitting" :value="form_submitting ? 'Editing Comment...' : 'Edit Comment'" >
 
 </form>
 </div>
@@ -37,6 +37,12 @@ export default{
       form_submitting: false
     }
   },
+  mounted(){
+    axios.get('/api/comments/' + this.$route.params.id)
+      .then( response => {
+        this.fields = response.data.data;
+      });
+  },
   methods: {
     select_file(event){
       this.fields.thumbnail = event.target.files[0];
@@ -44,14 +50,15 @@ export default{
     submit_form() {
       this.form_submitting = true;
       //pass thumbnail
-      let fields = new FormData();
-      for (let key in this.fields){
-        fields.append(key, this.fields[key]);
-      }
-      // axios.post('/api/comments', this.fields)
-      axios.post('/api/comments', fields)
+      // let fields = new FormData();
+      // for (let key in this.fields){
+      //   fields.append(key, this.fields[key]);
+      
+      
+     // axios.put('/api/comments', fields)
+     axios.put('/api/comments/' + this.$route.params.id, this.fields)
         .then(response => {
-          this.$swal('Comment saved!');
+          this.$swal({ icon: 'success', title: 'Edited'});
           this.$router.push('/');
           this.form_submitting = false;
         }).catch(error => {
@@ -61,7 +68,7 @@ export default{
           }
           this.form_submitting = false;
         });
+      }
     }
-  }
-}	
+  }	
 </script>
